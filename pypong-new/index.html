@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.8">
+	<title>Pypong - Переосмысление игры Пинг-Понг</title>
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Noto+Sans&family=Nunito:wght@800&family=Open+Sans:wght@500&family=Poppins:wght@500&display=swap');
+		* {
+			outline: none;
+			border: 0;
+			font-family: sans-serif;
+			padding: 0;
+			list-style: none;
+			margin: 0;
+		}
+		a {
+			color: black;
+		}
+		@media screen and (min-width: 1000px) {
+			.bg {
+				position: fixed;
+				z-index: -1;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				/*background: linear-gradient(125deg, rgba(100, 100, 255, 1), rgba(255, 100, 100, 1)); */
+				background: url(bg.png) no-repeat;
+				background-size: cover;
+			} 
+			#menu {
+				position: fixed;
+				width: 300px;
+				height: calc(100% - 50px);
+				top: 25px;
+				right: 25px;
+			}
+			#menu ul.pc-menu {
+				position: absolute;
+				background: rgba(255, 255, 255, 0.5);
+				width: calc(100% - 40px);
+				padding: 20px;
+				font-size: 18px;
+				border-radius: 10px;
+				line-height: 24px;
+				font-family: 'Noto Sans', sans-serif;
+				height: 127px;
+				backdrop-filter: blur(10px);
+				user-select: none;
+			}
+			#menu ul.pc-menu li {
+				cursor: pointer;
+				width: auto;
+				background: rgba(255, 255, 255, 0.5);
+				padding: 2px;
+				padding-left: 10px;
+				font-family: 'Noto Sans', sans-serif;
+				border-radius: 8px;
+				margin: 3px;
+			}
+			#menu ul.pc-menu li:hover {
+				text-decoration: underline;
+			}
+			#page {
+				position: absolute;
+				top: 25px;
+				left: 25px;
+				user-select: none;
+				right: calc(300px + 25px + 25px);
+				width: calc(100% - 25px - 25px - 300px - 25px - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				padding: 20px;
+				border-radius: 20px;
+				backdrop-filter: blur(5px);
+				height: 100%;
+			}
+			#page:after {
+				content: '';
+				position: absolute;
+				top: 100%;
+				height: 25px;
+				width: 100%;
+			}
+			#page .deskription {
+				position: absolute;
+				height: calc(300px - 40px );
+				width: calc(100% - 40px - 40px);
+				padding: 20px;
+				border-radius: 20px;
+				background: rgba(255, 255, 255, 0.5);
+			}
+			#page .deskription .logo {
+				position: absolute;
+				left: 20px;
+				top: 20px;
+				height: 100px;
+				width: 100px;
+				background: url(logo.png) no-repeat;
+				background-size: 100%;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+				border-radius: 10px;
+			}
+			#page .deskription .app-name {
+				position: absolute;
+				top: 20px;
+				left: calc(100px + 20px + 10px);
+				line-height: 38px;
+				font-size: 34px;
+				font-family: 'Nunito', sans-serif;
+				font-weight: bold;
+			}
+			#page .deskription .app-prename {
+				position: absolute;
+				font-family: 'Fira Sans', sans-serif;
+				left: calc(100px + 20px + 10px);
+				opacity: 0.8;
+				top: calc(20px + 38px + 5px);
+			}
+			#page .deskription .app-download {
+				position: absolute;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				padding-left: 15px;
+				padding-right: 15px;
+				font-size: 16px;
+				font-family: 'Open Sans', sans-serif;
+				color: white;
+				border-radius: 8px;
+				top: 20px;
+				right: 20px;
+				user-select: none;
+				cursor: pointer;
+				background: rgba(50, 50, 150, 1);
+			}
+			#page .deskription .app-developer {
+				position: absolute;
+				font-family: 'Fira Sans', sans-serif;
+				top: calc(20px + 38px + 5px + 16px + 5px);
+				opacity: 0.8;
+				left: calc(100px + 20px + 10px);
+			}
+			#page .deskription .app-title-desk {
+				position: absolute;
+				top: calc(100px + 20px + 10px);
+				left: 20px;
+				font-size: 20px;
+				font-weight: bold;
+			}
+			#page .deskription .app-desk {
+				position: absolute;
+				top: calc(100px + 20px + 10px + 30px);
+				left: 20px;
+				font-size: 16px;
+				width: calc(100% - 40px - 230px - 20px );
+			}
+			#page .deskription .app-platforms {
+				position: absolute;
+				width: 230px;
+				height: 80px;
+				right: 20px;
+				bottom: 20px;
+				background: rgba(255, 255, 255, 0.5);
+				padding: 10px;
+				border-radius: 10px;
+				user-select: none;
+			}
+			#page .deskription .app-platforms .app-title-platform {
+				position: absolute;
+				font-size: 18px;
+				font-weight: bold;
+			}
+			#page .deskription .app-platforms .app-platform-windows {
+				position: absolute;
+				top: 40px;
+				left: 10px;
+				width: 50px;
+				height: 50px;
+			}
+			#page .deskription .app-platforms .app-platform-linux {
+				position: absolute;
+				top: 40px;
+				left: 70px;
+				width: 50px;
+				height: 50px;
+			}
+			#page .screenshots {
+				position: absolute;
+				top: calc(20px + 300px + 20px);
+				width: calc(100% - 40px - 40px);
+				padding: 20px;
+				border-radius: 20px;
+				height: calc(300px - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				left: 20px;
+			}
+			#page .screenshots .scrsht-1 {
+				position: absolute;
+				top: 20px;
+				width: calc(50% - 20px - 10px);
+				height: auto;
+				left: 20px;
+				background: url(screen1.png) no-repeat;
+				background-size: 100%;
+				border-radius: 10px;
+			}
+
+			#page .screenshots .scrsht-2 {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				width: calc(50% - 20px - 10px);
+				height: auto;
+				background: url(screen2.png) no-repeat;
+				background-size: 100%;
+				border-radius: 10px;
+			}
+			#page .download {
+				position: absolute;
+				width: calc(100% - 40px - 40px);
+				padding: 20px;
+				border-radius: 20px;
+				height: calc(300px - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				left: 20px;
+			}
+			#page .download .verdown {
+				position: absolute;
+				width: calc((100% - 80px) / 3);
+				background: rgba(255, 255, 255, 0.5);
+				height: calc(100% - 40px);
+				border-radius: 10px;
+			}
+			#page .download .ver-1 {
+				left: 20px;
+			}
+			#page .download .ver-2 {
+				left: calc(20px + ((100% - 80px) / 3) + 20px);
+			}
+			#page .download .ver-3 {
+				left: calc(20px + ((100% - 80px) / 3) + 20px + ((100% - 80px) / 3) + 20px);
+			}
+			#page .download .verdown .ver-game {
+				position: absolute;
+				top: 10px;
+				left: 0px;
+				font-family: 'Nunito', sans-serif;
+				width: 100%;
+				font-size: 24px;
+				font-weight: bold;
+				text-align: center;
+			}
+			#page .download .verdown .ver-ver {
+				position: absolute;
+				top: 40px;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				font-family: monospace;
+				font-size: 14px;
+				opacity: 0.5;
+			}
+			#page .download .verdown .ver-ver.latest {
+				color: green;
+				opacity: 1;
+			}
+			#page .download .verdown .ver-t-1 {
+				position: absolute;
+				top: 60px;
+				font-size: 16px;
+				left: 20px;
+			}
+			#page .download .verdown .ver-new {
+				position: absolute;
+				top: 90px;
+				left: 20px;
+				padding-left: 20px;
+			}
+			#page .download .verdown .ver-new li {
+				list-style: disc;
+			}
+			#page .download .verdown .ver-server {
+				position: absolute;
+				bottom: 5px;
+				opacity: 0.5;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				font-size: 12px;
+				font-family: monospace;
+			}
+			#page .download .verdown .ver-linux {
+				position: absolute;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				padding-left: 15px;
+				padding-right: 15px;
+				font-size: 16px;
+				color: white;
+				font-family: 'Open Sans', sans-serif;
+				border-radius: 8px;
+				user-select: none;
+				cursor: pointer;
+				background: rgba(50, 50, 150, 1);
+				width: calc(50% - 10px - 10px + 5px);
+				bottom: 25px;
+				left: 10px;
+			}
+			#page .download .verdown .ver-win {
+				position: absolute;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				padding-left: 15px;
+				padding-right: 15px;
+				font-size: 16px;
+				color: white;
+				font-family: 'Open Sans', sans-serif;
+				border-radius: 8px;
+				user-select: none;
+				cursor: pointer;
+				background: rgba(50, 50, 150, 1);
+				width: calc(50% - 10px - 10px + 5px);
+				bottom: 25px;
+				right: 10px;
+			}
+			#menu .copyright-pc {
+				position: absolute;
+				top: 190px;
+				padding:  20px;
+				width: calc(100% - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				backdrop-filter: blur(10px);
+				border-radius: 10px;
+				font-size: 16px;
+				color: black;
+				text-align: center;
+				font-weight: bold;
+				user-select: none;
+				font-family: 'Poppins', sans-serif;
+			}
+			#menu .pc-menu .mobile-menu-el {
+				display: none;
+			}
+		}
+		@media screen and (max-width: 1000px) {
+			.bg {
+				position: fixed;
+				z-index: -1;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				background: url(bg.png) no-repeat;
+				background-size: cover;
+			}
+			#menu .pc-menu .pc-menu-el {
+				display: none;
+			}
+			#menu .pc-menu {
+				position: fixed;
+				bottom: 15px;
+				z-index: 9999;
+				width: 370px;
+				backdrop-filter: blur(10px);
+				border-radius: 15px;
+				height:  calc(80px + 20px);
+				left: calc(50% - 370px / 2);
+				background: rgba(0, 0, 0, 0.5);
+			}
+			#menu .pc-menu li {
+				width: 80px;
+				height: 80px;
+				position: absolute;
+				top: 10px;
+				background: rgba(0, 0, 0, 0.5);
+				border-radius: 10px;
+				color: white;
+			}
+			#menu .pc-menu .mobile-menu-el.info  {
+				position: absolute;
+				left: 10px;
+			}
+			#menu .pc-menu .mobile-menu-el.screen {
+				left: calc(10px + 80px + 10px);
+			}
+			#menu .pc-menu .mobile-menu-el.down {
+				left: calc(80px + 80px + 10px + 5px + 15px);
+			}
+			#menu .pc-menu .mobile-menu-el.news {
+				left: calc(80px + 80px + 80px + 10px + 10px + 20px);
+			}
+			#menu .pc-menu .mobile-menu-el.info:before {
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				left: 15px;
+				top: 10px;
+				content: "";
+				background: url(mobile-info.png) no-repeat;
+				background-size: 100%;
+			}
+			#menu .pc-menu .mobile-menu-el.info:after {
+				position: absolute;
+				height: 15px;
+				font-size: 10px;
+				left: 0px;
+				width: 100%;
+				content: "Описание";
+				bottom: 0px;
+				text-align: center;
+			}
+
+			#menu .pc-menu .mobile-menu-el.screen:before {
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				left: 15px;
+				top: 10px;
+				content: "";
+				background: url(mobile-screenshots.png) no-repeat;
+				background-size: 100%;
+			}
+			#menu .pc-menu .mobile-menu-el.screen:after {
+				position: absolute;
+				height: 15px;
+				font-size: 10px;
+				left: 0px;
+				width: 100%;
+				content: "Скриншоты";
+				bottom: 0px;
+				text-align: center;
+			}
+
+			#menu .pc-menu .mobile-menu-el.down:before {
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				left: 15px;
+				top: 10px;
+				content: "";
+				background: url(mobile-download.png) no-repeat;
+				background-size: 100%;
+			}
+			#menu .pc-menu .mobile-menu-el.down:after {
+				position: absolute;
+				height: 15px;
+				font-size: 10px;
+				left: 0px;
+				width: 100%;
+				content: "Скачать";
+				bottom: 0px;
+				text-align: center;
+			}
+
+			#menu .pc-menu .mobile-menu-el.news:before {
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				left: 15px;
+				top: 10px;
+				content: "";
+				background: url(mobile-news.png) no-repeat;
+				background-size: 100%;
+			}
+			#menu .pc-menu .mobile-menu-el.news:after {
+				position: absolute;
+				height: 15px;
+				font-size: 10px;
+				left: 0px;
+				width: 100%;
+				content: "Новости";
+				bottom: 0px;
+				text-align: center;
+			}
+			#page {
+				position: absolute;
+				top: 20px;
+				left: 20px;
+				right: 20px;
+				border-radius: 15px;
+				bottom: 100px;
+				height: calc(20px + 450px + 300px);
+				background: rgba(255, 255, 255, 0.5);
+			}
+			#page .bottom {
+				content: "";
+				position: absolute;
+				width: 100%;
+				top: 0px;
+				height: calc(100px + 20px + 40px );
+			}
+			#page .deskription {
+				position: absolute;
+				left: 20px;
+				right: 20px;
+				top: 20px;
+				width: calc(100% - 40px);
+				height: 450px;
+				z-index: 1;
+				border-radius: 15px;
+				background: rgba(255, 255, 255, 0.5);
+			}
+			#page .deskription .logo {
+				position: absolute;
+				top: 20px;
+				left: 20px;
+				background: url(logo.png) no-repeat;
+				background-size: 100%;
+				width: 100px;
+				height: 100px;
+				border-radius: 10px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+			}
+			#page .deskription .app-name {
+				position: absolute;
+				top: 20px;
+				left: calc(100px + 20px + 10px);
+				line-height: 30px;
+				font-size: 30px;
+				font-family: 'Nunito', sans-serif;
+				font-weight: bold;
+			}
+			#page .deskription .app-prename {
+				position: absolute;
+				font-family: 'Fira Sans', sans-serif;
+				left: calc(100px + 20px + 10px);
+				opacity: 0.8;
+				font-size: 16px;
+				top: calc(20px + 38px + 5px - 10px);
+			}
+			#page .deskription .app-download {
+				display: none;
+			}
+			#page .deskription .app-developer {
+				position: absolute;
+				font-family: 'Fira Sans', sans-serif;
+				top: calc(20px + 38px + 5px + 16px + 5px + 15px - 10px);
+				opacity: 0.8;
+				font-size: 16px;
+				left: calc(100px + 20px + 10px);
+			}
+			#page .deskription .app-title-desk {
+				position: absolute;
+				top: calc(100px + 20px + 20px + 100px + 10px);
+				left: 20px;
+				font-size: 20px;
+				font-weight: bold;
+			}
+			#page .deskription .app-desk {
+				position: absolute;
+				top: calc(100px + 20px + 20px + 100px + 10px + 30px);
+				left: 20px;
+				font-size: 16px;
+				width: calc(100% - 40px);
+			}
+			#page .deskription .app-platforms {
+				position: absolute;
+				width: calc(100% - 40px);
+				height: 100px;
+				right: 20px;
+				top: calc(100px + 20px + 20px);
+				background: rgba(255, 255, 255, 0.5);
+				border-radius: 10px;
+				user-select: none;
+			}
+			#page .deskription .app-platforms .app-title-platform {
+				position: absolute;
+				font-size: 18px;
+				top: 10px;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				font-weight: bold;
+			}
+			#page .deskription .app-platforms .app-platform-windows {
+				position: absolute;
+				top: 40px;
+				left: 10px;
+				width: 50px;
+				height: 50px;
+			}
+			#page .deskription .app-platforms .app-platform-linux {
+				position: absolute;
+				top: 40px;
+				left: 70px;
+				width: 50px;
+				height: 50px;
+			}
+
+			#page .screenshots {
+				position: absolute;
+				top: calc(20px + 450px + 20px);
+				width: calc(100% - 40px - 40px);
+				padding: 20px;
+				border-radius: 15px;
+				height: calc(300px - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				left: 20px;
+			}
+			#page .screenshots .scrsht-1 {
+				position: absolute;
+				top: 20px;
+				width: calc(50% - 20px - 10px);
+				height: auto;
+				left: 20px;
+				background: url(screen1.png) no-repeat;
+				background-size: 100%;
+				border-radius: 10px;
+			}
+
+			#page .screenshots .scrsht-2 {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				width: calc(50% - 20px - 10px);
+				height: auto;
+				background: url(screen2.png) no-repeat;
+				background-size: 100%;
+				border-radius: 10px;
+			}
+			#page .download {
+				position: absolute;
+				width: calc(100% - 40px);
+				border-radius: 15px;
+				height: calc(300px + 300px + 300px + 20px + 20px + 20px + 20px);
+				background: rgba(255, 255, 255, 0.5);
+				left: 20px;
+			}
+			#page .download .verdown {
+				position: absolute;
+				width: calc(100% - 40px);
+				background: rgba(255, 255, 255, 0.5);
+				height: 300px;
+				border-radius: 10px;
+				left: 20px;
+			}
+			#page .download .ver-1 {
+				top: calc(20px + 300px + 20px + 300px + 20px);
+			}
+			#page .download .ver-2 {
+				top: calc(20px + 300px + 20px);
+			}
+			#page .download .ver-3 {
+				top: 20px;
+			}
+			#page .download .verdown .ver-game {
+				position: absolute;
+				top: 10px;
+				left: 0px;
+				font-family: 'Nunito', sans-serif;
+				width: 100%;
+				font-size: 24px;
+				font-weight: bold;
+				text-align: center;
+			}
+			#page .download .verdown .ver-ver {
+				position: absolute;
+				top: 40px;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				font-family: monospace;
+				font-size: 14px;
+				opacity: 0.5;
+			}
+			#page .download .verdown .ver-ver.latest {
+				color: green;
+				opacity: 1;
+			}
+			#page .download .verdown .ver-t-1 {
+				position: absolute;
+				top: 60px;
+				font-size: 16px;
+				left: 20px;
+			}
+			#page .download .verdown .ver-new {
+				position: absolute;
+				top: 90px;
+				left: 20px;
+				padding-left: 20px;
+			}
+			#page .download .verdown .ver-new li {
+				list-style: disc;
+			}
+			#page .download .verdown .ver-server {
+				position: absolute;
+				bottom: 5px;
+				opacity: 0.5;
+				left: 0px;
+				width: 100%;
+				text-align: center;
+				font-size: 12px;
+				font-family: monospace;
+			}
+			#page .download .verdown .ver-linux {
+				position: absolute;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				padding-left: 15px;
+				padding-right: 15px;
+				font-size: 16px;
+				color: white;
+				font-family: 'Open Sans', sans-serif;
+				border-radius: 8px;
+				user-select: none;
+				cursor: pointer;
+				background: rgba(50, 50, 150, 1);
+				width: calc(50% - 10px - 10px + 5px);
+				bottom: 25px;
+				left: 10px;
+			}
+			#page .download .verdown .ver-win {
+				position: absolute;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				padding-left: 15px;
+				padding-right: 15px;
+				font-size: 16px;
+				color: white;
+				font-family: 'Open Sans', sans-serif;
+				border-radius: 8px;
+				user-select: none;
+				cursor: pointer;
+				background: rgba(50, 50, 150, 1);
+				width: calc(50% - 10px - 10px + 5px);
+				bottom: 25px;
+				right: 10px;
+			}
+			#menu .copyright-pc {
+				position: absolute;
+				padding:  20px;
+				width: calc(100% - 40px - 40px);
+				left: 20px;
+				background: rgba(255, 255, 255, 0.5);
+				backdrop-filter: blur(10px);
+				border-radius: 15px;
+				font-size: 16px;
+				color: black;
+				text-align: center;
+				font-weight: bold;
+				user-select: none;
+				font-family: 'Poppins', sans-serif;
+			}
+
+			
+		}
+ 	</style>
+ 	<meta name="viewport" content="width=device-width, user-scalable=no">
+ 	<script type="text/javascript">
+ 		let pageEl = ["#page .deskription", "#page .screenshots", "#page .download"]
+ 		let screen = "pc"
+ 		let index = 0
+ 	</script>
+</head>
+<body oncontextmenu="return false;" ondblclick="return false;">
+
+	<div class="bg"></div>
+
+	<div id="menu">
+		<ul class='pc-menu'>
+			<li onclick="document.location.href='#game-description'" class='pc-menu-el'>Описание игры</li>
+			<li onclick="document.location.href='#game-screenshots'" class='pc-menu-el'>Скриншоты игры</li>
+			<li onclick="document.location.href='#game-download'" class='pc-menu-el'>Скачать игру</li>
+			<li class='end pc-menu-el'>Новости проекта</li>
+
+			<li class='mobile-menu-el info first'></li>
+			<li class='mobile-menu-el screen'></li>
+			<li class='mobile-menu-el down'></li>
+			<li class='mobile-menu-el news end'></li>
+		</ul>
+		<div class="copyright-pc">
+			2021-2022 Well Inc.
+		</div>
+	</div>
+
+	<div id="page">
+		<div class="deskription" id='game-description'>
+			<div class="logo"></div>
+			<div class="app-name">Pypong</div>
+			<div class="app-prename">Переосмысление игры Пинг-Понг</div>
+			<div class="app-download">Скачать</div>
+			<div class="app-developer">Разработчик: Илларион Коржаков</div>
+			<div class="app-title-desk">Описание:</div>
+			<div class="app-platforms">
+				<div class="app-title-platform">Поддерживается на:</div>
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAABL0lEQVRoge2awWrCQBRFj7ar7FwIbUEogilVkH5B/1I/pl2KWzf+g+iqf2BdOGJM7Jiamfgi98BbZJjMvPvmEhheQAjho3XrBDwkQOpiALy5SIEl8JmdbEHICzAE+i5G7vkVaHveO8n9MVZ2OToUE+0D7+wrb4oEGAPPmbEp8AP8RogT/mutB/ZHnvfsAOi59TbAk5u/vWKPsrT+fMhQ1QqHdQuVC8jFAn0R7thjWKq0tUJUsfYT8X3eGoWEWENCrCEh1pAQa0iINc4JmVdccxZwrTJ7iMYwp9o9IW+tGHeRgrV0H7GGhFhDQqwhIdaQEGtIiDXOCfmuPYsA3E1bIUajZ82xa1VboyckCfABdDNjE4y23q4lRjO0krVi0Kj2tI+Vizy+HwYWtWUnxJ2wAxPml5QOj7xQAAAAAElFTkSuQmCC" class='app-platform-windows' draggable='false'>
+				<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAEOUlEQVRoge2aXWhURxTHf9l8VI01LRpErQm1hlAoGBWVNFjQIkUxbV9qBYv90NoXfVAUH9Q3S0H70NJSRIqCIChiVZTSD/rxZl9EqVQlhaSN2Kit1voZk7jbhzPXnd07d+7M3bu7PviHQ5Kzc878z53ZOXPODTyGE+qBJ6pNIileAPYCA0BOyS3gNLADmFY9au54D7hPPgCT3Ac2VIugCxYAI9iD0GVVdWjaUQOcwT2IHPAv8GQ1yNrQiV8QgaxOi0AmJT/d2u9ZJcToABalNH9q+Bp5wteBNqAd2TpRukCuItvykUEvQmyTptts0enSWiGOTriOkGrTdO0WnS6vVoijE4YQUqOAQ8A+JKPn1M9DwEH1eXEg26rANxIBqanAPeABcFfpDgLDwG1gMuFAvqoC30jopB4QJptDAjtq0PdVgW8kdGJZ4CNgAjAD2AL8hTk4fSUfCeiklhs+rweWEh3I2lIJpJUQdcwinBtagHctNqsNNhXHNMJPeBcwDvly7yR/qtnktUoTL8bHxJPMAvvJ5xuT9ANNFeb+EHMJX92vIDfhIWAQ+FaNA1iJPeAvK8j9IeowX923xtgdN9joK7e4THwjscZA5B/g6Ri7KcANg20gA0BzeSiH0QD8YSCxztH+fYOtLntT5hsJ02r0IPnCBRngvMGHvsW60qVshonEMk8fcV/8n9MiG4U5hkl78E+udcBFgy9dOl2dJcnsbxl0n2EuZW0YAQ7HjNno6dMZ9Uie0J/aPSSLJ8F87CsyWIJvK0zdkuMl+MsQfjDFssLVkQ9eMuiOefrQkQVOxYxZ6uLIN5CZBt1pTx/FOBvz+WwXJ76BtBt0vZ4+ihEXyDMl+jeiGehAmgnBHp5Uos+pwMtAo/q7FXgTKYuzyOlWNtQgrwhyFPat0sYbwHdpO30dyeifArVKdwS4SWHvKgk6gD+RxsU54BPKVJt0U1jlfa70E4BLyPdkRgn+M8CvFB67K0vwZ8TbhEvVLPlj8RWlG0a2W6PBhw1Bp7EbuAz8DWxHtm8d/ne4AnwAnETqi6hEdRkYr8bv0/T9OB6ZCn2Yt1EN8AXwmz/9PK5hz7bFpWlzkY1rbqlX488iK/wU8nAWIiVysPoTkwaiP2GbZJH7EsgqBvo7jvM0Oc5zAhidJJAljhPkkKVvQLbCj0q323EeUy84Sn4nQefe1P63yYfKrgUpd2txQ5fnPLd8A1nvOcEIME/ZtmIveRuA6QnmuUOCd449noHkgB+U7fPIdltF4T2pBan1L5Dvc33j6PsE8KxvECD1sm8g/ynbsUX6IcJ5KCiWbG2hHHI0l/RGqxF5egeQzO0SyDVlO85h7Bg11pan9lCG6vA5pBd1jOh/0TiixmaQJp1Ngs77TwY/g8A7aQdgwnjkZDqJXEtGgO9J9rKmA0mew0gQvwAvpkPTD6NS8lOLnGaP8T/WYVJVUrwMeQAAAABJRU5ErkJggg==" class='app-platform-linux' draggable='false'>
+			</div>
+			<div class="app-desk">Отбивайте мяч, собирайте очки, соревнуйтесь с друзьями. В игре доступны разные темы оформления, можно включить то, что больше понравилось. С каждым обновлением мы стараемся добавить что-то новое и интересное, что могло бы вас удивить!</div>
+		</div>
+		<div class="screenshots" id="game-screenshots">
+			<div class='scrsht-1'></div>
+			<div class='scrsht-2'></div>
+		</div>
+		<div class="download" id="game-download">
+			<div class="ver-1 verdown">
+				<span class="ver-game">Pypong</span>
+				<span class="ver-ver">0.14</span>
+				<span class="ver-t-1">Нововведения:</span>
+				<ul class='ver-new'>
+					<li>Русский язык</li>
+					<li>Темная тема</li>
+					<li>Исправление багов</li>
+					<li>Редизайн</li>
+				</ul>
+				<button class='ver-linux'>Linux</button>
+				<button class='ver-win'>Windows</button>
+				<span class='ver-server'>Krendel Link</span>
+			</div>
+			<div class="ver-2 verdown">
+				<span class="ver-game">Pypong</span>
+				<span class="ver-ver">0.14.1</span>
+				<span class="ver-t-1">Нововведения:</span>
+				<ul class='ver-new'>
+					<li>Новые фоны</li>
+					<li>Музыкальное сопровождение</li>
+					<li>Оптимизация</li>
+				</ul>
+				<button class='ver-linux'>Linux</button>
+				<button class='ver-win'>Windows</button>
+				<span class='ver-server'>Krendel Link</span>
+			</div>
+			<div class="ver-3 verdown">
+				<span class="ver-game">Pypong</span>
+				<span class="ver-ver latest">0.14.2</span>
+				<span class="ver-t-1">Нововведения:</span>
+				<button class='ver-linux'>Linux</button>
+				<button class='ver-win'>Windows</button>
+				<ul class='ver-new'>
+					<li>Немецкий язык</li>
+					<li>Улучшение Интерфейса</li>
+					<li>Исправления багов</li>
+					<li>Оптимизация</li>
+				</ul>
+				<span class='ver-server'>Krendel Link</span>
+			</div>
+		</div>
+		<div class="bottom"></div>
+	</div>
+
+		<script>
+			function pagePlus() {
+				let blockContent = document.querySelector("#page .screenshots");
+				let scr1 = document.querySelector("#page .screenshots .scrsht-1");
+				let scr2 = document.querySelector("#page .screenshots .scrsht-2");
+				scr1.style.height = ((scr1.offsetWidth / 4) * 3) + "px"
+				scr2.style.height = ((scr2.offsetWidth / 4) * 3) + "px"
+				blockContent.style.height = (((scr2.offsetWidth / 4) * 3) ) + "px"
+				let page = document.querySelector("#page")
+				let height = 0;
+				for (var i = 0; i < pageEl.length; i++) {
+					height += document.querySelector(pageEl[i]).offsetHeight;
+				}
+				height += 40
+				page.style.height = height + "px";
+				let bl1 = document.querySelector("#page .download");
+				bl1.style.top = height - 300 + 20 + "px"
+			}
+			let mobileMenu = {}
+			function pagePlusMobile() {
+				let blockContent = document.querySelector("#page .screenshots");
+				let scr1 = document.querySelector("#page .screenshots .scrsht-1");
+				let scr2 = document.querySelector("#page .screenshots .scrsht-2");
+				scr1.style.height = ((scr1.offsetWidth / 4) * 3) + "px"
+				scr2.style.height = ((scr2.offsetWidth / 4) * 3) + "px"
+				blockContent.style.height = (((scr2.offsetWidth / 4) * 3) ) + "px"
+				let page = document.querySelector("#page")
+				let height = 0;
+				for (var i = 0; i < pageEl.length; i++) {
+					height += document.querySelector(pageEl[i]).offsetHeight;
+				}
+				height += 40
+				page.style.height = (height + 40) + "px";
+				let bl1 = document.querySelector("#page .download");
+				bl1.style.top = height - 300 - 300 - 300 - 20 - 20 - 20 -20 + 20 + "px"
+				document.querySelector("#page .bottom").style.top = (height + 15 + 40 + 25 + 20) + "px"
+				document.querySelector("#menu .copyright-pc").style.top = (height + 15 + 40 + 25) + "px"
+			}
+			document.body.onload = function(){
+				if (window.matchMedia('(min-width: 1000px)').matches) {
+					index = setInterval(pagePlus, 0)	
+					screen = "pc"
+				} else {
+					index = setInterval(pagePlusMobile, 0)
+					screen = "mobile"
+				}
+				setInterval(checkScreen, 0)
+			}
+			function checkScreen() {
+				if (window.matchMedia('(min-width:1000px)').matches) {
+					if (screen != "pc") {
+						clearInterval(index)
+						index = setInterval(pagePlus, 0)
+						screen = "pc"
+					}
+				} else {
+					if (screen != "mobile") {
+						clearInterval(index)
+						index = setInterval(pagePlusMobile, 0)
+						screen = "mobile"
+					}
+				}
+			}
+		</script>
+
+</body>
+</html>
